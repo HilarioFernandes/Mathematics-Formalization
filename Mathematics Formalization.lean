@@ -1,1 +1,0 @@
-import «Mathematics Formalization».NaturalNumberGame
