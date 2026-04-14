@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.Tactic.Basic
+import Mathlib.Data.Nat.Basic
 
 namespace NNG
 
@@ -16,7 +17,9 @@ theorem prop_1_1 (x y : ℕ) (h : y = x + 7) : 2 * y = 2 * (x + 7) := by
   rw [h]  -- rewrite y as x + 7; goal becomes 2 * (x + 7) = 2 * (x + 7)
           -- closed by rfl automatically
 
-
+theorem prop_1_1_alt (x y : ℕ) (h : y = x + 7) : 2 * y = 2 * (x + 7) := by
+  rw [← h]  -- rewrite (x + 7) as y; goal becomes 2 * y = 2 * y
+          -- closed by rfl automatically
 
 
 
