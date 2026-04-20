@@ -39,5 +39,30 @@ theorem prop_1_2_alt : 2 = Nat.succ (Nat.succ 0) := by
   rewrite [one_eq_succ_zero] -- rewrite 1 as succ 0; goal becomes succ (succ 0) = succ (succ 0)
   rfl -- closed by rfl
 
+theorem prop_1_2_alt2 : 2 = Nat.succ (Nat.succ 0) := by
+  rw [← one_eq_succ_zero] -- rewrite succ 0 as 1; goal becomes 2 = succ 1
+  -- closed by rw's automatic rfl (since 2 is definitionally succ 1)
+
+theorem prop_1_2_alt3 : 2 = Nat.succ (Nat.succ 0) := by
+  rewrite [← one_eq_succ_zero] -- rewrite succ 0 as 1; goal becomes 2 = succ 1
+  rewrite [← two_eq_succ_one] -- rewrite succ 1 as 2; goal becomes 2 = 2
+  rfl -- closed by rfl
+
+-- Proposition 1.3
+
+theorem prop_1_3 (a b c : ℕ) : a + (b+0) + (c+0) = a + b + c := by
+  rw [Nat.add_zero] -- rewrite b+0 as b; goal becomes a + b + (c+0) = a + b + c
+  rw [Nat.add_zero] -- rewrite c+0 as c; goal becomes a + b + c = a + b + c
+
+theorem prop_1_4 (n : ℕ) : Nat.succ n = n + 1 := by
+  rfl -- closed by rfl automatically since `n + 1` and `Nat.succ n` are definitionally equal
+
+theorem prop_1_4alt (n : ℕ) : Nat.succ n = n + 1 := by
+  rewrite [one_eq_succ_zero] -- rewrite 1 as succ 0; goal becomes n.succ = n + succ 0
+  rewrite [Nat.add_succ] -- rewrite n + succ 0 as (n + 0).succ; goal becomes n.succ = (n + 0).succ
+  rewrite [Nat.add_zero] -- rewrite n + 0 as n; goal becomes n.succ = n.succ
+  rfl -- closed by rfl
+
+
 
 end NNG
