@@ -1,0 +1,251 @@
+\documentclass[12pt]{article}
+
+% Encoding & language
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+% Math
+\usepackage{amsmath, amsthm, amsfonts}
+\usepackage{mathtools}
+
+% Page layout
+\usepackage[top=2cm, bottom=2cm, left=2.5cm, right=2.5cm]{geometry}
+
+% Links & URLs
+\usepackage{hyperref}
+\usepackage{url}
+
+% Lists
+\usepackage{enumerate}
+
+% Figures
+\usepackage{graphicx}
+\usepackage{float}
+
+% TikZ & diagrams
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usetikzlibrary{arrows, matrix, positioning}
+
+% Bibliography
+\usepackage[backend=biber, style=alphabetic]{biblatex}
+\addbibresource{refs.bib}
+
+% -------------------------------------------------------
+% Custom environments
+% -------------------------------------------------------
+
+% Footnote without marker
+\newcommand\blfootnote[1]{%
+  \begingroup
+    \renewcommand\thefootnote{}\footnote{#1}%
+    \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+% Restriction of a function: f|_A
+\newcommand\restr[2]{{%
+  \left.\kern-\nulldelimiterspace
+  #1
+  \vphantom{\big|}
+  \right|_{#2}
+}}
+
+% Proof environments
+\newenvironment{proofsketch}{\paragraph{Proof sketch:}}{\hfill$\square$}
+\newenvironment{prof}{\paragraph{Proof:}}{\hfill$\square$}
+
+% -------------------------------------------------------
+% Theorem-like environments
+% -------------------------------------------------------
+\newtheorem{axiom}{Axiom}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{conjecture}{Conjecture}[section]
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{construction}{Construction}[section]
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[section]
+
+% -------------------------------------------------------
+% Math shortcuts
+% -------------------------------------------------------
+\newcommand\CC{\mathcal{C}}
+
+
+\newcommand{\doublequotes}[1]{``#1''}
+
+
+% -------------------------------------------------------
+% Document metadata
+% -------------------------------------------------------
+\title{\bf Informal notes on the Natural Number Game}
+\author{Hil\'{a}rio Fernandes de Araujo J\'{u}nior \\ \texttt{hilariofjunior@live.com}}
+
+
+% -------------------------------------------------------
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+% -------------------------------------------------------
+\section*{Introduction}
+
+The objective of this document is to present my solutions to the exercises in the Natural Number Game in an informal style, to consolidate the knowledge acquired in the course. The theoretical content will be minimal, reflecting the style of the course.
+
+The notation $a: A$ means that $a$ is a term of type $A$. Terms are also called \doublequotes{inhabitants}. In type theory, each type comes equipped with rules that govern how its inhabitants are constructed and used. These rules come in two flavors:
+\begin{itemize}
+  \item Introduction rules specify how to construct inhabitants of a type. They specify \doublequotes{what does it take to produce a term of the type}. The reflexivity rule $\text{intro}$ is an example: it tells us that $\text{refl}_x$ is a canonical inhabitant of $x=x$.
+  \item Elimination rules specify how to use inhabitants of a type. They specify \doublequotes{what we can do with a term of a given type}. The rule $\text{elim}$ is an example: it tells us that an inhabitant $h:x=y$ can be used to transport inhabitants between related types.
+\end{itemize}
+
+
+Given two types $A$ and $B$, we can define the type of functions from $A$ to $B$, denoted by $A \to B$. The function type $A \to B$ is governed by the following rules:
+\begin{itemize}
+  \item $\to_{\text{intro}}$: the type $A \to B$ is inhabited if there is a way to assign to each inhabitant $a:A$ an inhabitant $b:B$. The canonical way to specify such an assignment is via a \textit{lambda term} $\lambda a . \, t(a)$, where $t(a)$ is an expression of type $B$ that may depend on $a$.
+  \item $\to_{\text{elim}}$: given inhabitants $f:A \to B$ and $a:A$, there is an inhabitant $f(a):B$.
+\end{itemize}
+
+Informally, we can think of a lambda term $\lambda a . \, t(a)$ as a function $a \mapsto t(a)$. 
+
+Given a type $A$ and terms $x,y : A$, the identity type $x =_A y$ is governed by the following introduction and elimination rules:
+
+\begin{itemize}
+  \item $=_{\text{intro}}$: given a type $A$ and term $x:A$, there is a term $\text{refl}_x : x =_A x$.
+  \item $=_{\text{elim}}$: given a type $A$, terms $x,y : A$, types $P(x)$ and $P(y)$ (we shall go over what $P(\cdot)$ means at a later time, but we can think informally of it as a family of types indexed by terms of another type) and $h:x=y$, then there exists an inhabitant $f(h): P(x) \to P(y)$ induced by $h:x=y$.
+\end{itemize}
+
+Throughout this document, we will use the notation $x = y$ instead of $x =_A y$ when the type $A$ is clear from the context.
+
+In type theory, propositions are types and proofs are terms. Therefore, our objective is to provide witnesses to certain types, and that in turn proves our desired propositions.
+The reflexivity introduction rule means that propositions of the form $x =_A x$ are provable. 
+
+This elimination rule (here described informally) allows us to use identity (when it is inhabited) to \doublequotes{rewrite} terms, or \doublequotes{translate} inhabitants between types. Identity symmetry is a consequence of this rule:
+
+\begin{proposition}\label{prop:identity_symmetry}
+Given $x,y:A$ and $h:x=y$, the type $y=x$ is inhabited.
+\end{proposition}
+\begin{proof}
+Consider the type family $P(z) \coloneqq (z=x)$. Then $\text{refl}_x : P(x)$, i.e., $\text{refl}_x : x = x$, is a canonical inhabitant of $P(x)$. Applying the elimination rule for identity with $h:x=y$, we get an inhabitant of $P(y)$, i.e., of $y=x$.
+\end{proof}
+
+The inhabitant constructed in the proof of Proposition \ref{prop:identity_symmetry} is called the \doublequotes{symmetric} of $h$, and it is denoted by $h^{-1}$.
+
+One notational observation is worth mentioning: we write $\coloneqq$ for definitions, in accordance to Lean's convention. Don't confuse the colon in the notation $x:A$ with the colon in the notation $P(z) \coloneqq (z=x)$. The first is a judgment; the second is a definition.
+
+It is worth pausing to understand the difference between a \textit{judgment} and a \textit{proposition}. In classical set theory, the expression $a \in A$ is a \textit{proposition}: it is a mathematical statement that is either true or false, and we can ask whether it is provable or refutable. In type theory, on the other hand, the expression $a : A$ is a \textit{judgment}: it is a declaration made at the meta-level, asserting that the term $a$ has been \textit{constructed} in accordance with the formation rules of type $A$. A judgment is not something that can be true or false --- it is either \textit{valid} (accepted by the type-checker) or \textit{invalid} (rejected). In other words, $a \in A$ is a claim we might need to prove, whereas $a : A$ is a syntactic fact about a term that is verified mechanically.
+
+% -------------------------------------------------------
+\section{Tutorial World}
+
+We may begin by stating the first proposition we are asked to prove:
+
+\begin{proposition}\label{prop:simple_rewrite}
+Given $x,y:\mathbb{N}$ and $h:y=x+7$, the type $2 \cdot y = 2 \cdot (x + 7)$ is inhabited.
+\end{proposition}
+\begin{proof}
+We have $h:y=x+7$ (thus $h^{-1}:x+7=y$). Let $P(z) \coloneqq (2 \cdot z = 2 \cdot (x + 7))$. By the elimination rule for equality on $h^{-1}$, there exists an inhabitant $f(h^{-1}): P(x+7) \to P(y)$. We know that $P(x+7)$ is inhabited by $\text{refl}_{2 \cdot (x+7)}$, the canonical inhabitant given by the introduction rule for equality. Therefore, $P(y)$ is inhabited by $f(h^{-1})(\text{refl}_{2 \cdot (x+7)})$.
+\end{proof}
+
+Note here that the assumption $y=x+7$ (which in logic is a proposition involving the binary relation =) here is described as the type $y = x+7$ being inhabited by term $h$.
+
+We could have proved $2 \cdot y = 2 \cdot (x+7)$ by using $h$ instead of $h^{-1}$:
+\begin{proof}
+Define the type family $Q(z) \coloneqq (2 \cdot y = 2 \cdot z)$. By the elimination rule for equality on $h$, there exists an inhabitant $f(h): Q(y) \to Q(x+7)$. We know that $Q(y)$ is inhabited by $\text{refl}_{2 \cdot y}$, the canonical inhabitant given by the introduction rule for equality. Therefore, $Q(x+7)$ is inhabited by $f(h)(\text{refl}_{2 \cdot y})$.
+\end{proof}
+
+Note that these proofs are quite verbose, and would get even more verbose the more we apply the identity elimination rule (we would have to define a series of types $P_0(z), P_1(z)$, etc.). We can make it more concise by using the fact that the process of applying the elimination rules and \doublequotes{transporting} terms can be thought of as \doublequotes{rewriting types}: instead of trying to provide an inhabitant for $2 \cdot y = 2 \cdot (x + 7)$ we use the elimination rule to provide an inhabitant for $2 \cdot (x + 7) = 2 \cdot (x + 7)$ instead. An alternative, more informal proof would be:
+\begin{proof}
+By the assumption $h: y = x+7$, we can rewrite the type $2 \cdot y = 2 \cdot (x+7)$ as $2 \cdot (x+7) = 2 \cdot (x+7)$. The inhabitant $\text{refl}_{2 \cdot (x+7)}$ concludes the proof.
+\end{proof}
+
+This, in my view, provides a nice middle-ground between the verbose and the fully intuitive proof (which would be something like this: since $y = x+7$, we can replace $y$ by $(x+7)$ in $2 \cdot y = 2 \cdot (x+7)$ and have a tautology.). 
+
+\subsection{The Natural Numbers}
+
+Now, we shall introduce the type of natural numbers, denoted by $\mathbb{N}$. This type has the following introduction rules:
+
+\begin{itemize}
+  \item $\mathbb{N}_{\text{intro}}$: there is a term $0: \mathbb{N}$
+  \item $\mathbb{N}_{\text{intro}}$: there is a term $\text{succ}: \mathbb{N} \to \mathbb{N}$
+\end{itemize}
+
+This type also has an elimination rule (which generalizes the principle of induction), but we shall not need it for now. Now, let us define a few numbers:
+
+\begin{equation}
+  \begin{aligned}
+    1 &\coloneqq \text{succ}(0) \\
+    2 &\coloneqq \text{succ}(1) \\
+    3 &\coloneqq \text{succ}(2) \\
+    4 &\coloneqq \text{succ}(3)
+  \end{aligned}
+\end{equation}
+
+These definitions in particular mean that the types $1 = \text{succ}(0)$, $2 = \text{succ}(1)$, etc. are inhabited.
+
+\begin{proposition}\label{prop:two_is_succ_of_succ_of_zero}
+  The type $2 = \text{succ}(\text{succ}(0))$ is inhabited.
+\end{proposition}
+\begin{proof}
+  By the definition of $2$, type $2 = \text{succ}(1)$ is inhabited. We can then rewrite the type $2 = \text{succ}(\text{succ}(0))$ as $\text{succ}(1) = \text{succ}(\text{succ}(0))$. By the definition of $1$, we have $1 = \text{succ}(0)$. Thus, we can rewrite the type $\text{succ}(1) = \text{succ}(\text{succ}(0))$ as $\text{succ}(\text{succ}(0)) = \text{succ}(\text{succ}(0))$.
+  The inhabitant $\text{refl}_{\text{succ}(\text{succ}(0))}$ concludes the proof.
+\end{proof}
+
+The next proposition in the Natural Number Game is still \ref{prop:two_is_succ_of_succ_of_zero}, but the execise is to provide the proof by rewriting the right-hand side of the equality. We've already done a similar thing for Proposition \ref{prop:simple_rewrite} (with some verbosity); the shorter-style proof for Proposition \ref{prop:two_is_succ_of_succ_of_zero} is as follows:
+
+\begin{proof}
+  By the definition of $1$, type $1 = \text{succ}(0)$ is inhabited. We can then rewrite the type $2 = \text{succ}(\text{succ}(0))$ as $2 = \text{succ}(1)$. By the definition of $2$, we have $2 = \text{succ}(1)$. Thus, we can rewrite the type $2 = \text{succ}(1)$ as $2 = 2$.
+  The inhabitant $\text{refl}_{2}$ concludes the proof.
+\end{proof}
+
+\subsection{Addition}
+
+We now introduce the addition operation on natural numbers as a term $+$ of the function type $\mathbb{N} \to \mathbb{N} \to \mathbb{N}$. A small note on this type signature is in order: in type theory, the function arrow is right-associative, meaning this is actually $\mathbb{N} \to (\mathbb{N} \to \mathbb{N})$. This reflects a technique called \textit{currying}: instead of a single function taking two numbers, $+$ is a function that takes one number and returns a new function (the \doublequotes{add $n$} function), which then takes the second number. This takes the ambiguity out of the function signature itself, though it is important to distinguish this from the \textit{associativity of the operator} ($ (a+b)+c = a+(b+c) $), which is a deep property that must be proven. In alignment with the propositions-as-types paradigm, the properties of addition correspond to the inhabitancy of certain identity types. Addition is characterized by two fundamental such rules:
+\begin{itemize}
+  \item $\texttt{add\_zero}: +(n)(0) = n$, which means that for each $n : \mathbb{N}$, the type $+(n)(0) = n$ is inhabited. However, instead of writing $+(n)(0)$ we shall write $n+0$. Thus, type $n+0 = n$ is inhabited for all $n : \mathbb{N}$.
+  \item $\texttt{add\_succ}: +(n)(\text{succ}(m)) = \text{succ}(+(n)(m))$, which means that for each $n, m : \mathbb{N}$, the type $+(n)(\text{succ}(m)) = \text{succ}(+(n)(m))$ is inhabited. However, instead of writing $+(n)(\text{succ}(m))$ we shall write $n+(m+1)$ and instead of writing $\text{succ}(+(n)(m))$ we shall write $\text{succ}(n+m)$. Thus, type $n+\text{succ}(m) = \text{succ}(n+m)$ is inhabited for all $n, m : \mathbb{N}$.
+\end{itemize}
+
+The first proposition we wish to prove is then:
+
+\begin{proposition}
+  The type $a+(b+0)+(c+0) = a+b+c$ is inhabited.
+\end{proposition}
+\begin{proof}
+  By $\texttt{add\_zero}$, $b+0 = b$ and $c+0 = c$ are inhabited. Thus, we can rewrite the type $a+(b+0)+(c+0) = a+b+c$ as $a+b+c = a+b+c$.
+  The inhabitant $\text{refl}_{a+b+c}$ concludes the proof.
+\end{proof}
+
+The next proposition is:
+\begin{proposition}
+  The type $\text{succ}(n) = n+1$ is inhabited.
+\end{proposition}
+\begin{proof}
+  By the definition of $1$, type $1 = \text{succ}(0)$ is inhabited. We can then rewrite the type $\text{succ}(n) = n+1$ as $\text{succ}(n) = n+\text{succ}(0)$. By $\texttt{add\_succ}$, type $n+\text{succ}(0) = \text{succ}(n+0)$ is inhabited. Thus, we can rewrite the type $\text{succ}(n) = n+\text{succ}(0)$ as $\text{succ}(n) = \text{succ}(n+0)$. By $\texttt{add\_zero}$, type $n+0 = n$ is inhabited. Thus, we can rewrite the type $\text{succ}(n) = \text{succ}(n+0)$ as $\text{succ}(n) = \text{succ}(n)$.
+  The inhabitant $\text{refl}_{\text{succ}(n)}$ concludes the proof.
+\end{proof}
+
+The inhabitant of the type $\text{succ}(n) = n+1$ will be called $\texttt{succ\_eq\_add\_one}$. The next proposition uses this inhabitant and is the last one in this section:
+
+\begin{proposition}
+  The type $2+2=4$ is inhabited.
+\end{proposition}
+\begin{proof}
+  By the definition of $4$, type $4 = \text{succ}(3)$ is inhabited. We can then rewrite the type $2+2=4$ as $2+2=\text{succ}(3)$. Similarly, by the definition of $3$, type $3 = \text{succ}(2)$ is inhabited. Thus, we can rewrite the type $2+2=\text{succ}(3)$ as $2+2=\text{succ}(\text{succ}(2))$. By the definition of $2$, type $2 = \text{succ}(1)$ is inhabited. Thus, we can rewrite the type $2+2=\text{succ}(\text{succ}(2))$ as $2+\text{succ}(1)=\text{succ}(\text{succ}(1))$. By $\texttt{add\_succ}$, type $2+\text{succ}(1)=\text{succ}(2+1)$ is inhabited. Thus, we can rewrite the type $2+\text{succ}(1)=\text{succ}(\text{succ}(2))$ as $\text{succ}(2+1)=\text{succ}(\text{succ}(2))$. Now, by $\texttt{succ\_eq\_add\_one}$, type $2+1=\text{succ}(2)$ is inhabited. Thus, we can rewrite the type $\text{succ}(2+1)=\text{succ}(\text{succ}(2))$ as $\text{succ}(\text{succ}(2))=\text{succ}(\text{succ}(2))$.
+  The inhabitant $\text{refl}_{\text{succ}(\text{succ}(2))}$ concludes the proof.
+\end{proof} 
+
+
+
+% -------------------------------------------------------
+
+\printbibliography
+
+\end{document}
