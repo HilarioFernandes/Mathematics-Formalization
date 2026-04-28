@@ -95,7 +95,8 @@ theorem prop_2_1 (n : ℕ) : 0 + n = n := by
     | zero => -- This is the base case. The goal is 0 + 0 = 0.
       rw [Nat.add_zero] -- rewrite 0 + 0 as 0; goal becomes 0 = 0
       -- closed by rfl automatically
-    | succ d ih => -- This is the induction step. The goal is 0 + succ d = succ d given that 0 + d = d (ih).
+    | succ d ih => -- This is the induction step.
+                   -- The goal is 0 + succ d = succ d given that 0 + d = d (ih).
       rw [Nat.add_succ] -- rewrite 0 + succ d as succ (0 + d); goal becomes succ (0 + d) = succ d
       rw [ih] -- rewrite 0 + d as d; goal becomes succ d = succ d
       -- closed by rfl automatically
@@ -105,8 +106,10 @@ theorem prop_2_1alt (n : ℕ) : 0 + n = n := by
     | zero => -- This is the base case. The goal is 0 + 0 = 0.
       rewrite [Nat.add_zero] -- rewrite 0 + 0 as 0; goal becomes 0 = 0
       rfl -- closed by rfl
-    | succ d ih => -- This is the induction step. The goal is 0 + succ d = succ d given that 0 + d = d (ih).
-      rewrite [Nat.add_succ] -- rewrite 0 + succ d as succ (0 + d); goal becomes succ (0 + d) = succ d
+    | succ d ih => -- This is the induction step.
+                   -- The goal is 0 + succ d = succ d given that 0 + d = d (ih).
+      rewrite [Nat.add_succ] -- rewrite 0 + succ d as succ (0 + d);
+                             -- goal becomes succ (0 + d) = succ d
       rewrite [ih] -- rewrite 0 + d as d; goal becomes succ d = succ d
       rfl -- closed by rfl
 
