@@ -242,7 +242,30 @@ The inhabitant of the type $\text{succ}(n) = n+1$ will be called $\texttt{succ\_
   The inhabitant $\text{refl}_{\text{succ}(\text{succ}(2))}$ concludes the proof.
 \end{proof} 
 
+% -------------------------------------------------------
+\section{Addition World}
 
+Now, we begin using the induction elimination rule for natural numbers. We shall still not define it formally (since it depends on dependent types and the universe hierarchy, which have not yet been introduced), but we can think of it as follows: given a type $P(n)$ that is indexed by $n \in \mathbb{N}$, the rule tells us that if $P(0)$ is inhabited, and if for all $n \in \mathbb{N}$, $P(n)$ being inhabited implies $P(\text{succ}(n))$ is inhabited, then $P(n)$ is inhabited for all $n \in \mathbb{N}$. 
+
+Our first proposition in this section is analogous to \texttt{add\_zero} (rather, to the type $+(n)(0) = n$ which is inhabited by $\texttt{add\_zero}$):
+
+\begin{proposition}
+  The type $0 + n = n$ is inhabited for all $n \in \mathbb{N}$.
+\end{proposition}
+\begin{proof}
+  We can prove this proposition by induction on $n$. Base case: $n = 0$. By \texttt{add\_zero}, type $0 + 0 = 0$ is inhabited. Inductive step: Assume that the type $0 + n = n$ is inhabited for some $n \in \mathbb{N}$. We wish to show that type $0 + \text{succ}(n) = \text{succ}(n)$ is inhabited. By $\texttt{add\_succ}$, type $0 + \text{succ}(n) = \text{succ}(0 + n)$ is inhabited. Thus, we can rewrite the type $0 + \text{succ}(n) = \text{succ}(n)$ as $\text{succ}(0 + n) = \text{succ}(n)$. Now, by the inductive hypothesis (the inhabitant of $0 + n = n$) we can rewrite the type $\text{succ}(0 + n) = \text{succ}(n)$ as $\text{succ}(n) = \text{succ}(n)$.
+  The inhabitant $\text{refl}_{\text{succ}(n)}$ concludes the proof.
+\end{proof}
+
+The inhabitant will be called $\texttt{zero\_add}$.
+
+
+
+
+% -------------------------------------------------------
+\section{Next Steps}
+
+\textcolor{red}{Mention further topics for study, such as lambda calculus, dependent types, universe hierarchy, etc. as a sort of "appendix".}
 
 % -------------------------------------------------------
 
