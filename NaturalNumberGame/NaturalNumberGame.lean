@@ -31,6 +31,9 @@ theorem two_eq_succ_one : 2 = Nat.succ 1 := rfl
 -- Note: `rw` attempts to close the goal automatically
 -- `rewrite` however, does not
 
+-- We shall provide alternative versions of the propositions to showcase the
+-- usage of `rewrite` instead of `rw`, if the difference in proof length is noticeable.
+
 theorem prop_1_2 : 2 = Nat.succ (Nat.succ 0) := by
   rw [two_eq_succ_one] -- rewrite 2 as succ 1; goal becomes succ 1 = succ (succ 0)
   -- closed by rw's automatic rfl (since 1 is definitionally Nat.succ 0)
@@ -123,25 +126,6 @@ theorem prop_2_2 (a b : ℕ) : Nat.succ a + b = Nat.succ (a + b) := by
            -- goal becomes succ (succ (a + d)) = succ (succ (a + d))
     -- closed by rfl automatically
 
-theorem prop_2_2_alt (a b : ℕ) : Nat.succ a + b = Nat.succ (a + b) := by
-  induction b with -- This is the induction statement.
-  | zero => -- This is the base case. The goal is succ a + 0 = succ (a + 0).
-    rewrite [Nat.add_zero] -- rewrite succ a + 0 as succ a;
-                           -- goal becomes succ a = succ (a + 0)
-    rewrite [Nat.add_zero] -- rewrite a + 0 as a;
-                           -- goal becomes succ a = succ a
-    rfl -- closed by rfl automatically
-  | succ d ih => -- This is the induction step.
-                 -- The goal is succ a + succ d = succ (a + succ d) given that
-                 -- succ a + d = succ (a + d) (ih).
-    rewrite [Nat.add_succ] -- rewrite succ a + succ d as succ (succ a + d);
-                           -- goal becomes succ (succ a + d) = succ (a + succ d)
-    rewrite [Nat.add_succ] -- rewrite a + succ d as succ (a + d);
-                           -- goal becomes succ (succ a + d) = succ (succ (a + d))
-    rewrite [ih] -- rewrite succ a + d as succ (a + d);
-                 -- goal becomes succ (succ (a + d)) = succ (succ (a + d))
-    rfl -- closed by rfl
-
 -- Proposition 2.3
 
 theorem prop_2_3 (a b : ℕ) : a + b = b + a := by
@@ -163,24 +147,31 @@ theorem prop_2_3 (a b : ℕ) : a + b = b + a := by
                            -- goal becomes succ (d + a) = succ (d + a)
     -- closed by rfl automatically
 
-theorem prop_2_3_alt (a b : ℕ) : a + b = b + a := by
-  induction b with -- This is the induction statement.
-  | zero => -- This is the base case. The goal is a + 0 = 0 + a.
-    rewrite [Nat.zero_add] -- rewrite 0 + a as a;
-                           -- goal becomes a + 0 = a
-    rewrite [Nat.add_zero] -- rewrite a + 0 as a;
-                           -- goal becomes a = a
-    rfl -- closed by rfl automatically
+-- Proposition 2.4
+
+theorem prop_2_4 (a b c : ℕ) : a + (b + c) = (a + b) + c := by
+  induction c with -- This is the induction statement.
+  | zero => -- This is the base case. The goal is a + (b + 0) = (a + b) + 0.
+    rw [Nat.add_zero] -- rewrite b + 0 as b;
+                           -- goal becomes a + b = (a + b) + 0
+    rw [Nat.add_zero] -- rewrite (a + b) + 0 as a + b;
+                           -- goal becomes a + b = a + b
+    -- closed by rfl automatically
   | succ d ih => -- This is the induction step.
-                 -- The goal is a + succ d = succ d + a given that
-                 -- a + d = d + a (ih).
-    rewrite [Nat.add_succ] -- rewrite a + succ d as succ (a + d);
-                           -- goal becomes succ (a + d) = succ d + a
-    rewrite [Nat.succ_add] -- rewrite succ d + a as succ (d + a);
-                           -- goal becomes succ (a + d) = succ (d + a)
-    rewrite [ih] -- rewrite a + d as d + a;
-                           -- goal becomes succ (d + a) = succ (d + a)
-    rfl -- closed by rfl automatically
+                 -- The goal is a + (b + succ d) = (a + b) + succ d given that
+                 -- a + (b + d) = (a + b) + d (ih).
+    rw [Nat.add_succ] -- rewrite b + succ d as succ (b + d);
+                           -- goal becomes a + succ (b + d) = (a + b) + succ d
+    rw [Nat.add_succ] -- rewrite (a + b) + succ d as succ ((a + b) + d);
+                           -- goal becomes a + succ (b + d) = succ ((a + b) + d)
+    rw [Nat.add_succ] -- rewrite a + succ (b + d) as succ (a + (b + d));
+                           -- goal becomes succ (a + (b + d)) = succ ((a + b) + d)
+    -- closed by rfl automatically
+    rw [ih] -- rewrite a + (b + d) as (a + b) + d;
+                           -- goal becomes succ ((a + b) + d) = succ ((a + b) + d)
+    -- closed by rfl automatically
+
+
 
 
 

@@ -207,7 +207,9 @@ The next proposition in the Natural Number Game is still \ref{prop:two_is_succ_o
 
 \subsection{Addition}
 
-We now introduce the addition operation on natural numbers as a term $+$ of the function type $\mathbb{N} \to \mathbb{N} \to \mathbb{N}$. A small note on this type signature is in order: in type theory, the function arrow is right-associative, meaning this is actually $\mathbb{N} \to (\mathbb{N} \to \mathbb{N})$. This reflects a technique called \textit{currying}: instead of a single function taking two numbers, $+$ is a function that takes one number and returns a new function (the \doublequotes{add $n$} function), which then takes the second number. This takes the ambiguity out of the function signature itself, though it is important to distinguish this from the \textit{associativity of the operator} ($ (a+b)+c = a+(b+c) $), which is a deep property that must be proven. In alignment with the propositions-as-types paradigm, the properties of addition correspond to the inhabitancy of certain identity types. Addition is characterized by two fundamental such rules:
+We now introduce the addition operation on natural numbers as a term $+$ of the function type $\mathbb{N} \to \mathbb{N} \to \mathbb{N}$. A small note on this type signature is in order: in type theory, the function arrow is right-associative, meaning this is actually $\mathbb{N} \to (\mathbb{N} \to \mathbb{N})$. This reflects a technique called \textit{currying}: instead of a single function taking two numbers, $+$ is a function that takes one number and returns a new function (the \doublequotes{add $n$} function), which then takes the second number.
+
+This syntactic convention takes the ambiguity out of the function signature itself, though it is important to distinguish this from the \textit{associativity of the operator} ($(a+b)+c = a+(b+c)$), which is a deep property that must be proven (by the way, Lean interprets the non-canonical $a+b+c$ as $(a+b)+c$). In alignment with the propositions-as-types paradigm, the properties of addition correspond to the inhabitancy of certain identity types. Addition is characterized by two fundamental such rules:
 \begin{itemize}
   \item $\texttt{add\_zero}: +(n)(0) = n$, which means that for each $n : \mathbb{N}$, the type $+(n)(0) = n$ is inhabited. However, instead of writing $+(n)(0)$ we shall write $n+0$. Thus, type $n+0 = n$ is inhabited for all $n : \mathbb{N}$.
   \item $\texttt{add\_succ}: +(n)(\text{succ}(m)) = \text{succ}(+(n)(m))$, which means that for each $n, m : \mathbb{N}$, the type $+(n)(\text{succ}(m)) = \text{succ}(+(n)(m))$ is inhabited. However, instead of writing $+(n)(\text{succ}(m))$ we shall write $n+(m+1)$ and instead of writing $\text{succ}(+(n)(m))$ we shall write $\text{succ}(n+m)$. Thus, type $n+\text{succ}(m) = \text{succ}(n+m)$ is inhabited for all $n, m : \mathbb{N}$.
@@ -281,6 +283,17 @@ Finally, we're able to prove the commutativity of addition:
   
   Inductive step: Assume that the type $a + d = d + a$ is inhabited for some $d \in \mathbb{N}$. We wish to show that type $a + \text{succ}(d) = \text{succ}(d) + a$ is inhabited. By $\texttt{add\_succ}$, type $a + \text{succ}(d) = \text{succ}(a + d)$ is inhabited. Thus, we can rewrite the type $a + \text{succ}(d) = \text{succ}(d) + a$ as $\text{succ}(a+d) = \text{succ}(d) + a$. Now, by $\texttt{succ\_add}$, type $\text{succ}(d) + a = \text{succ}(d+a)$ is inhabited. Thus, we can rewrite $\text{succ}(a+d) = \text{succ}(d) + a$ as $\text{succ}(a+d) = \text{succ}(d+a)$. Now, by the inductive hypothesis (the inhabitant of $a+d = d+a$), we can rewrite the type $\text{succ}(a+d) = \text{succ}(d+a)$ as $\text{succ}(d+a) = \text{succ}(d+a)$. The inhabitant $\text{refl}_{\text{succ}(d+a)}$ concludes the proof. 
 \end{proof} 
+
+After commutativity, we prove associativity:
+
+\begin{proposition}
+  The type $(a+b)+c = a+(b+c)$ is inhabited for all $a, b, c \in \mathbb{N}$.
+\end{proposition}
+\begin{proof}
+  We shall prove this by induction on $c$. Base case: $c = 0$, meaning we wish to prove $(a+b)+0 = a+(b+0)$ is inhabited. By $\texttt{add\_zero}$, type $b+0=b$ is inhabited. Thus, we can rewrite the type $(a+b)+0 = a+(b+0)$ as $(a+b)+0 = a+b$. But by $\texttt{add\_zero}$ again, type $(a+b)+0 = a+b$ is inhabited. Thus, we can rewrite $(a+b)+0 = a+b$ as $a+b = a+b$. The inhabitant $\texttt{refl}_{a+b}$ concludes the proof of the base case. 
+  
+  Inductive step: Assume that the type $(a+b)+d = a+(b+d)$ is inhabited for some $d \in \mathbb{N}$. We wish to show that type $(a+b)+\text{succ}(d) = a+(b+\text{succ}(d))$ is inhabited. By $\texttt{add\_succ}$, type $(a+b)+\text{succ}(d) = \text{succ}((a+b)+d)$ is inhabited. Thus, we can rewrite the type $(a+b)+\text{succ}(d) = a+(b+\text{succ}(d))$ as $\text{succ}((a+b)+d) = a+(b+\text{succ}(d))$. Now, by $\texttt{add\_succ}$ again, type $b+\text{succ}(d) = \text{succ}(b+d)$ is inhabited. Thus, we can rewrite $\text{succ}((a+b)+d) = a+(b+\text{succ}(d))$ as $\text{succ}((a+b)+d) = a+\text{succ}(b+d)$. Now, by $\texttt{add\_succ}$ again, type $a+\text{succ}(b+d) = \text{succ}(a+(b+d))$ is inhabited. Thus, we can rewrite $\text{succ}((a+b)+d) = a+\text{succ}(b+d)$ as $\text{succ}((a+b)+d) = \text{succ}(a+(b+d))$. Now, by the inductive hypothesis (the inhabitant of $(a+b)+d = a+(b+d)$), we can rewrite the type $\text{succ}((a+b)+d) = \text{succ}(a+(b+d))$ as $\text{succ}(a+(b+d)) = \text{succ}(a+(b+d))$. The inhabitant $\text{refl}_{\text{succ}(a+(b+d))}$ concludes the proof. 
+\end{proof}
 
 
 
