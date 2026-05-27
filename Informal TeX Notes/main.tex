@@ -29,7 +29,7 @@
 
 % Bibliography
 \usepackage[backend=biber, style=alphabetic]{biblatex}
-\addbibresource{refs.bib}
+\addbibresource{Refs.bib}
 
 % -------------------------------------------------------
 % Custom environments
@@ -275,7 +275,7 @@ Now, we wish to prove the following:
 
 Finally, we're able to prove the commutativity of addition:
 
-\begin{proposition}
+\begin{proposition}\label{prop_comm}
   The type $a + b = b + a$ is inhabited for all $a, b \in \mathbb{N}$.
 \end{proposition}
 \begin{proof}
@@ -286,7 +286,7 @@ Finally, we're able to prove the commutativity of addition:
 
 After commutativity, we prove associativity:
 
-\begin{proposition}
+\begin{proposition}\label{prop_assoc}
   The type $(a+b)+c = a+(b+c)$ is inhabited for all $a, b, c \in \mathbb{N}$.
 \end{proposition}
 \begin{proof}
@@ -295,6 +295,14 @@ After commutativity, we prove associativity:
   Inductive step: Assume that the type $(a+b)+d = a+(b+d)$ is inhabited for some $d \in \mathbb{N}$. We wish to show that type $(a+b)+\text{succ}(d) = a+(b+\text{succ}(d))$ is inhabited. By $\texttt{add\_succ}$, type $(a+b)+\text{succ}(d) = \text{succ}((a+b)+d)$ is inhabited. Thus, we can rewrite the type $(a+b)+\text{succ}(d) = a+(b+\text{succ}(d))$ as $\text{succ}((a+b)+d) = a+(b+\text{succ}(d))$. Now, by $\texttt{add\_succ}$ again, type $b+\text{succ}(d) = \text{succ}(b+d)$ is inhabited. Thus, we can rewrite $\text{succ}((a+b)+d) = a+(b+\text{succ}(d))$ as $\text{succ}((a+b)+d) = a+\text{succ}(b+d)$. Now, by $\texttt{add\_succ}$ again, type $a+\text{succ}(b+d) = \text{succ}(a+(b+d))$ is inhabited. Thus, we can rewrite $\text{succ}((a+b)+d) = a+\text{succ}(b+d)$ as $\text{succ}((a+b)+d) = \text{succ}(a+(b+d))$. Now, by the inductive hypothesis (the inhabitant of $(a+b)+d = a+(b+d)$), we can rewrite the type $\text{succ}((a+b)+d) = \text{succ}(a+(b+d))$ as $\text{succ}(a+(b+d)) = \text{succ}(a+(b+d))$. The inhabitant $\text{refl}_{\text{succ}(a+(b+d))}$ concludes the proof. 
 \end{proof}
 
+The next proposition is a consequence of both commutativity and associativity:
+
+\begin{proposition}
+  The type $a + b + c = a + c + b$ is inhabited for all $a,b,c \in \mathbb{N}$.
+\end{proposition}
+\begin{proof}
+By Proposition \ref{prop_assoc}, type $(a+b)+c = a+(b+c)$ is inhabited. Thus, we can rewrite the type $a+b+c = a+c+b$ as $a+(b+c) = a+c+b$. Once again by Proposition \ref{prop_assoc}, type $(a+c)+b = a+(c+b)$ is inhabited. Thus, we can rewrite the type $a+(b+c) = a+c+b$ as $a+(b+c) = a+(c+b)$. Finally, by Proposition \ref{prop_comm} the type $b + c = c+b$ is inhabited. Thus, we can rewrite the type $a+(b+c) = a+(c+b)$ as $a+(b+c) = a+(b+c)$. The inhabitant $\text{refl}_{a+(b+c)}$ concludes the proof.
+\end{proof}
 
 
 % -------------------------------------------------------
@@ -303,6 +311,8 @@ After commutativity, we prove associativity:
 \textcolor{red}{Mention further topics for study, such as lambda calculus, dependent types, universe hierarchy, etc. as a sort of "appendix".}
 
 % -------------------------------------------------------
+
+\nocite{*}
 
 \printbibliography
 

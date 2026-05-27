@@ -171,7 +171,16 @@ theorem prop_2_4 (a b c : ℕ) : a + (b + c) = (a + b) + c := by
                            -- goal becomes succ ((a + b) + d) = succ ((a + b) + d)
     -- closed by rfl automatically
 
+-- Proposition 2.5
 
+theorem prop_2_5 (a b c : ℕ) : a + b + c = a + c + b := by
+  rw [← prop_2_4] -- rewrite (a + b) + c as a + (b + c)
+  -- goal becomes a + (b + c) = a + c + b
+  rw [← prop_2_4] -- rewrite (a + c) + b as a + (c + b)
+  -- goal becomes a + (b + c) = a + (c + b)
+  rw [prop_2_3 b c] -- rewrite b + c as c + b;
+                     -- goal becomes a + (c + b) = a + (c + b)
+  -- closed by rfl automatically
 
 
 
